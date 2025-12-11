@@ -474,23 +474,28 @@
   <!-- Lock screen -->
   <div id="lockScreen" class="lock-screen-wrapper">
     <div class="lock-card">
-      <div class="lock-title">🔐 My Personal Diary</div>
-      <div class="lock-subtitle" id="lockSubtitle">
-        Set a password to protect your diary.
-      </div>
+      <div class="lock-title" id="lockTitle">🔐 My Personal Diary</div>
+<div class="lock-subtitle" id="lockSubtitle">
+  Set a password to protect your diary.
+</div>
+
 
       <!-- Setup view (first time) -->
       <div id="setupView" class="lock-section" style="display:none;">
-        <label for="setupPassword">Create password</label>
+        <label for="setupPassword" id="setupPasswordLabel">Create password</label>
         <input type="password" id="setupPassword" autocomplete="new-password" />
 
-        <label for="setupPasswordConfirm" style="margin-top:8px;">Confirm password</label>
+        <label for="setupPasswordConfirm" id="setupConfirmLabel" style="margin-top:8px;">Confirm password</label>
         <input type="password" id="setupPasswordConfirm" autocomplete="new-password" />
 
-        <div class="small-text">
-          This is stored only on this browser. If you forget it, you can reset by clearing your browser storage for this page,
-          but you’ll also lose your diary entries.
-        </div>
+        <div class="small-text" id="lockSetupHelp">
+  This is stored only on this browser...
+</div>
+...
+<div class="small-text" id="lockLoginHelp">
+  If you truly forget your password...
+</div>
+
 
         <div class="lock-buttons">
           <button class="btn-primary" id="setupSaveBtn">Save password</button>
@@ -499,7 +504,7 @@
 
       <!-- Login view (after password exists) -->
       <div id="loginView" class="lock-section" style="display:none;">
-        <label for="loginPassword">Enter password</label>
+        <label for="loginPassword" id="loginPasswordLabel">Enter password</label>
         <input type="password" id="loginPassword" autocomplete="current-password" />
 
         <div class="lock-buttons">
@@ -519,32 +524,37 @@
   <!-- Main diary app (hidden until unlocked) -->
   <div id="appContainer" style="display:none;">
     <div class="app">
-      <h1>My Personal Diary </h1>
-      <div class="subtitle">A private space just for your thoughts ✨</div>
+      <h1 id="appTitle">My Personal Diary</h1>
+<div class="subtitle" id="appSubtitle">A private space just for your thoughts ✨</div>
 
       <div class="top-controls">
-        <div class="theme-controls">
-          <label for="themeSelect">Theme</label>
-          <select id="themeSelect">
-            <option value="light">Light</option>
-            <option value="cozy">Cozy</option>
-            <option value="dark">Dark</option>
-          </select>
-        </div>
-        <div class="auto-save-label">Auto-save: on</div>
-      </div>
-
+  <div class="theme-controls">
+    <label for="themeSelect" id="themeLabel">Theme</label>
+    <select id="themeSelect">
+      <option value="light">Light</option>
+      <option value="cozy">Cozy</option>
+      <option value="dark">Dark</option>
+    </select>
+  </div>
+  <div style="display:flex; align-items:center; gap:8px;">
+    <div class="auto-save-label" id="autoSaveLabel">Auto-save: on</div>
+    <select id="langSelect" style="padding:4px 8px; border-radius:999px; border:1px solid #cbd5e1; font-size:0.85rem;">
+      <option value="en">English</option>
+      <option value="zh">中文</option>
+    </select>
+  </div>
+</div>
       <div class="layout">
         <!-- Left: editor -->
         <div class="card">
           <div>
-            <label for="dateInput">Choose a date</label><br />
+            <label for="dateInput" id="labelDate">Choose a date</label>
             <input type="date" id="dateInput" />
           </div>
 
           <div class="inline-row">
             <div>
-              <label for="moodSelect">Mood</label>
+              <label for="moodSelect" id="labelMood">Mood</label>
               <select id="moodSelect">
                 <option value="">(no mood)</option>
                 <option value="very_happy">😄 Very happy</option>
@@ -559,7 +569,7 @@
               </select>
             </div>
             <div>
-              <label for="tagsInput">Tags</label>
+              <label for="tagsInput" id="labelTags">Tags</label>
               <input
                 type="text"
                 id="tagsInput"
@@ -569,28 +579,21 @@
           </div>
 
           <div>
-            <label for="entryText" style="margin-top:10px; display:block;">Today's entry</label>
+            label for="entryText" id="labelEntry" style="margin-top:10px; display:block;">Today's entry</label>
             <textarea id="entryText" placeholder="Write anything you like..."></textarea>
           </div>
 
           <div class="buttons">
-            <button class="btn-primary" id="saveBtn" type="button">Save entry</button>
-            <button class="btn-secondary" id="clearBtn" type="button">Clear text</button>
-            <button class="btn-secondary" id="voiceBtn" type="button">🎙️ Dictate</button>
-          </div>
-
-          <div class="status" id="statusText"></div>
           <div class="small-text">
             All diary entries (text, mood, tags) are stored only in this browser using local storage.
           </div>
         </div>
 
         <!-- Right: entries list + search + calendar + stats -->
-        <div class="card">
-          <strong>Past entries</strong>
-          <div class="small-text">
-            Search by text or tags. Leave empty to see everything.
-          </div>
+<strong id="pastEntriesTitle">Past entries</strong>
+<div class="small-text" id="pastEntriesHelp">
+  Search by text or tags. Leave empty to see everything.
+</div>
 
           <div class="search-row">
             <input
@@ -603,17 +606,18 @@
 
           <div id="entriesList" class="entries-list"></div>
 
-          <button class="btn-danger" id="deleteAllBtn" style="margin-top:10px;" type="button">
-            Delete all entries
-          </button>
+ <button class="btn-danger" id="deleteAllBtn" ...>Delete all entries</button>
+<div class="small-text" id="deleteAllHelp">
+  ⚠️ This will permanently delete everything from this browser.
+</div>
           <div class="small-text">
             ⚠️ This will permanently delete everything from this browser.
           </div>
 
          <div class="backup-buttons">
-  <button class="btn-secondary" id="exportJsonBtn" type="button">Export JSON</button>
-  <button class="btn-secondary" id="exportTextBtn" type="button">Export text</button>
-  <button class="btn-secondary" id="importJsonBtn" type="button">Import JSON</button>
+  <button class="btn-secondary" id="exportJsonBtn"...>Export JSON</button>
+<button class="btn-secondary" id="exportTextBtn"...>Export text</button>
+<button class="btn-secondary" id="importJsonBtn"...>Import JSON</button>
   <!-- hidden file input for import -->
   <input
     type="file"
@@ -622,9 +626,16 @@
     style="display:none"
   />
 </div>
-<div class="small-text">
+<div class="small-text" id="backupHelp">
   Use export to create a backup file you can store safely, and import JSON to restore or sync from that backup (e.g. from OneDrive).
 </div>
+      <button class="btn-primary" id="saveBtn" type="button">Save entry</button>
+            <button class="btn-secondary" id="clearBtn" type="button">Clear text</button>
+            <button class="btn-secondary" id="voiceBtn" type="button">🎙️ Dictate</button>
+          </div>
+
+          <div class="status" id="statusText"></div>
+      
 
 
           <div class="calendar-section">
@@ -649,11 +660,10 @@
             </table>
           </div>
 
-          <div class="mood-stats">
-            <div class="mood-stats-title">Mood statistics</div>
-            <div id="moodStatsContainer" class="mood-stats-body small-text">
-              No mood data yet.
-            </div>
+         <div class="mood-stats-title" id="moodStatsTitle">Mood statistics</div>
+<div id="moodStatsContainer" class="mood-stats-body small-text">
+  No mood data yet.
+</div>
           </div>
         </div>
       </div>
@@ -664,6 +674,215 @@
     const STORAGE_KEY = "myPersonalDiaryEntries";
     const PASSWORD_KEY = "myPersonalDiaryPassword";
     const THEME_KEY = "myDiaryTheme";
+    const LANG_KEY = "myDiaryLang";
+
+const translations = {
+  en: {
+    docTitle: "My Personal Diary (Locked)",
+    appTitle: "My Personal Diary",
+    appSubtitle: "A private space just for your thoughts ✨",
+
+    lockTitle: "🔐 My Personal Diary",
+    lockSetupSubtitle: "Set a password to protect your diary.",
+    lockLoginSubtitle: "Enter your password to unlock your diary.",
+    setupPasswordLabel: "Create password",
+    setupConfirmLabel: "Confirm password",
+    lockSetupHelp:
+      "This is stored only on this browser. If you forget it, you can reset by clearing this page's data, but you’ll also lose your diary entries.",
+    loginPasswordLabel: "Enter password",
+    lockLoginHelp:
+      "If you truly forget your password, you can clear this site’s data in your browser settings. That will remove the password and all diary entries.",
+
+    themeLabel: "Theme",
+    autoSaveLabel: "Auto-save: on",
+
+    labelDate: "Choose a date",
+    labelMood: "Mood",
+    labelTags: "Tags",
+    labelEntry: "Today's entry",
+
+    saveBtn: "Save entry",
+    clearBtn: "Clear text",
+    voiceBtn: "🎙️ Dictate",
+
+    pastEntriesTitle: "Past entries",
+    pastEntriesHelp: "Search by text or tags. Leave empty to see everything.",
+    deleteAllBtn: "Delete all entries",
+    deleteAllHelp: "⚠️ This will permanently delete everything from this browser.",
+    exportJsonBtn: "Export JSON",
+    exportTextBtn: "Export text",
+    importJsonBtn: "Import JSON",
+    backupHelp:
+      "Use export to create a backup file you can store safely, and import JSON to restore or sync from that backup (e.g. from OneDrive).",
+
+    searchPlaceholder: "Search (e.g. 'treatment', 'energy', 'teaching')",
+
+    moodStatsTitle: "Mood statistics",
+    moodStatsEmpty: "No mood data yet.",
+
+    weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+
+    moodVeryHappy: "😄 Very happy",
+    moodHappy: "😊 Happy",
+    moodCalm: "🙂 Calm",
+    moodNeutral: "😐 Neutral",
+    moodTired: "😴 Tired",
+    moodWorried: "😟 Worried",
+    moodSad: "😢 Sad",
+    moodAngry: "😡 Angry",
+    moodGrateful: "🙏 Grateful"
+  },
+  zh: {
+    docTitle: "我的私人日记（加锁）",
+    appTitle: "我的私人日记",
+    appSubtitle: "只属于你自己的安静空间 ✨",
+
+    lockTitle: "🔐 我的私人日记",
+    lockSetupSubtitle: "为你的日记设置一个密码。",
+    lockLoginSubtitle: "请输入密码解锁你的日记。",
+    setupPasswordLabel: "创建密码",
+    setupConfirmLabel: "确认密码",
+    lockSetupHelp:
+      "密码只保存在本浏览器中。如果忘记密码，可以在浏览器中清除本页面的数据，但这会同时删除所有日记内容。",
+    loginPasswordLabel: "输入密码",
+    lockLoginHelp:
+      "如果真的忘记密码，可以在浏览器设置中清除本网站的数据，这会同时移除密码和所有日记内容。",
+
+    themeLabel: "主题",
+    autoSaveLabel: "自动保存：已开启",
+
+    labelDate: "选择日期",
+    labelMood: "心情",
+    labelTags: "标签",
+    labelEntry: "今日内容",
+
+    saveBtn: "保存",
+    clearBtn: "清空",
+    voiceBtn: "🎙️ 语音输入",
+
+    pastEntriesTitle: "以往日记",
+    pastEntriesHelp: "可以按文字或标签搜索，留空则显示全部日记。",
+    deleteAllBtn: "删除全部日记",
+    deleteAllHelp: "⚠️ 此操作会永久删除本浏览器中的所有日记。",
+    exportJsonBtn: "导出 JSON",
+    exportTextBtn: "导出文本",
+    importJsonBtn: "导入 JSON",
+    backupHelp:
+      "可以导出到 OneDrive 等位置备份，也可以在其他设备上导入 JSON 文件进行同步。",
+
+    searchPlaceholder: "搜索（例如：治疗、精力、教学…）",
+
+    moodStatsTitle: "心情统计",
+    moodStatsEmpty: "还没有心情数据。",
+
+    weekdays: ["一", "二", "三", "四", "五", "六", "日"],
+
+    moodVeryHappy: "😄 非常开心",
+    moodHappy: "😊 开心",
+    moodCalm: "🙂 平静",
+    moodNeutral: "😐 一般",
+    moodTired: "😴 疲惫",
+    moodWorried: "😟 担心",
+    moodSad: "😢 难过",
+    moodAngry: "😡 生气",
+    moodGrateful: "🙏 感恩"
+  }
+};
+
+function applyLanguage(lang) {
+  const t = translations[lang] || translations.en;
+  const $ = (id) => document.getElementById(id);
+
+  document.title = t.docTitle;
+
+  if ($("appTitle")) $("appTitle").textContent = t.appTitle;
+  if ($("appSubtitle")) $("appSubtitle").textContent = t.appSubtitle;
+
+  if ($("lockTitle")) $("lockTitle").textContent = t.lockTitle;
+  // lockSubtitle will be set by showSetupView / showLoginView using these values
+  if ($("setupPasswordLabel")) $("setupPasswordLabel").textContent = t.setupPasswordLabel;
+  if ($("setupConfirmLabel")) $("setupConfirmLabel").textContent = t.setupConfirmLabel;
+  if ($("lockSetupHelp")) $("lockSetupHelp").textContent = t.lockSetupHelp;
+  if ($("loginPasswordLabel")) $("loginPasswordLabel").textContent = t.loginPasswordLabel;
+  if ($("lockLoginHelp")) $("lockLoginHelp").textContent = t.lockLoginHelp;
+
+  if ($("themeLabel")) $("themeLabel").textContent = t.themeLabel;
+  if ($("autoSaveLabel")) $("autoSaveLabel").textContent = t.autoSaveLabel;
+
+  if ($("labelDate")) $("labelDate").textContent = t.labelDate;
+  if ($("labelMood")) $("labelMood").textContent = t.labelMood;
+  if ($("labelTags")) $("labelTags").textContent = t.labelTags;
+  if ($("labelEntry")) $("labelEntry").textContent = t.labelEntry;
+
+  if ($("saveBtn")) $("saveBtn").textContent = t.saveBtn;
+  if ($("clearBtn")) $("clearBtn").textContent = t.clearBtn;
+  if ($("voiceBtn")) $("voiceBtn").textContent = t.voiceBtn;
+
+  if ($("pastEntriesTitle")) $("pastEntriesTitle").textContent = t.pastEntriesTitle;
+  if ($("pastEntriesHelp")) $("pastEntriesHelp").textContent = t.pastEntriesHelp;
+  if ($("deleteAllBtn")) $("deleteAllBtn").textContent = t.deleteAllBtn;
+  if ($("deleteAllHelp")) $("deleteAllHelp").textContent = t.deleteAllHelp;
+  if ($("exportJsonBtn")) $("exportJsonBtn").textContent = t.exportJsonBtn;
+  if ($("exportTextBtn")) $("exportTextBtn").textContent = t.exportTextBtn;
+  if ($("importJsonBtn")) $("importJsonBtn").textContent = t.importJsonBtn;
+  if ($("backupHelp")) $("backupHelp").textContent = t.backupHelp;
+
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) searchInput.placeholder = t.searchPlaceholder;
+
+  if ($("moodStatsTitle")) $("moodStatsTitle").textContent = t.moodStatsTitle;
+  const moodStatsContainer = $("moodStatsContainer");
+  if (moodStatsContainer && moodStatsContainer.textContent.trim().length === 0) {
+    moodStatsContainer.textContent = t.moodStatsEmpty;
+  }
+
+  // Weekday headers in calendar
+  const headerRow = document.querySelector(".calendar-grid thead tr");
+  if (headerRow && t.weekdays) {
+    const ths = headerRow.querySelectorAll("th");
+    t.weekdays.forEach((label, idx) => {
+      if (ths[idx]) ths[idx].textContent = label;
+    });
+  }
+
+  // Mood dropdown options (just text)
+  const moodSelect = document.getElementById("moodSelect");
+  if (moodSelect) {
+    const opts = moodSelect.options;
+    for (let i = 0; i < opts.length; i++) {
+      switch (opts[i].value) {
+        case "very_happy":
+          opts[i].textContent = t.moodVeryHappy;
+          break;
+        case "happy":
+          opts[i].textContent = t.moodHappy;
+          break;
+        case "calm":
+          opts[i].textContent = t.moodCalm;
+          break;
+        case "neutral":
+          opts[i].textContent = t.moodNeutral;
+          break;
+        case "tired":
+          opts[i].textContent = t.moodTired;
+          break;
+        case "worried":
+          opts[i].textContent = t.moodWorried;
+          break;
+        case "sad":
+          opts[i].textContent = t.moodSad;
+          break;
+        case "angry":
+          opts[i].textContent = t.moodAngry;
+          break;
+        case "grateful":
+          opts[i].textContent = t.moodGrateful;
+          break;
+      }
+    }
+  }
+}
+
     let currentSearchQuery = "";
     let currentCalendarDate = null;
     let autoSaveTimer = null;
@@ -1312,20 +1531,22 @@ importJsonInput.addEventListener("change", () => {
     }
 
     function showSetupView() {
-      document.getElementById("setupView").style.display = "block";
-      document.getElementById("loginView").style.display = "none";
-      document.getElementById("lockSubtitle").textContent =
-        "Set a password to protect your diary.";
-      setLockStatus("");
-    }
+  document.getElementById("setupView").style.display = "block";
+  document.getElementById("loginView").style.display = "none";
+  const lang = localStorage.getItem(LANG_KEY) || "en";
+  document.getElementById("lockSubtitle").textContent =
+    translations[lang].lockSetupSubtitle;
+  setLockStatus("");
+}
 
-    function showLoginView() {
-      document.getElementById("setupView").style.display = "none";
-      document.getElementById("loginView").style.display = "block";
-      document.getElementById("lockSubtitle").textContent =
-        "Enter your password to unlock your diary.";
-      setLockStatus("");
-    }
+   function showLoginView() {
+  document.getElementById("setupView").style.display = "none";
+  document.getElementById("loginView").style.display = "block";
+  const lang = localStorage.getItem(LANG_KEY) || "en";
+  document.getElementById("lockSubtitle").textContent =
+    translations[lang].lockLoginSubtitle;
+  setLockStatus("");
+}
 
     function setLockStatus(msg, isError = false) {
       const el = document.getElementById("lockStatus");
@@ -1380,12 +1601,44 @@ importJsonInput.addEventListener("change", () => {
     }
 
     /* ===== Initial page setup ===== */
-    document.addEventListener("DOMContentLoaded", () => {
-      // Apply saved theme even on lock screen
-      const savedTheme = localStorage.getItem(THEME_KEY) || "light";
-      applyTheme(savedTheme);
+   document.addEventListener("DOMContentLoaded", () => {
+  const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+  applyTheme(savedTheme);
 
+  const savedLang = localStorage.getItem(LANG_KEY) || "en";
+  const langSelect = document.getElementById("langSelect");
+  if (langSelect) {
+    langSelect.value = savedLang;
+    langSelect.addEventListener("change", () => {
+      const lang = langSelect.value;
+      localStorage.setItem(LANG_KEY, lang);
+      applyLanguage(lang);
+      // Also refresh lock subtitle depending on current mode:
       const storedPassword = getStoredPassword();
+      if (!storedPassword) {
+        // setup view
+        document.getElementById("lockSubtitle").textContent =
+          translations[lang].lockSetupSubtitle;
+      } else {
+        // login view
+        document.getElementById("lockSubtitle").textContent =
+          translations[lang].lockLoginSubtitle;
+      }
+    });
+  }
+  applyLanguage(savedLang);
+
+  const storedPassword = getStoredPassword();
+
+  // your existing code that sets up setupView/loginView etc
+  // ...
+  if (!storedPassword) {
+    showSetupView();
+  } else {
+    showLoginView();
+  }
+});
+
 
       document.getElementById("setupSaveBtn").addEventListener("click", setupPassword);
       document.getElementById("loginBtn").addEventListener("click", unlockDiary);
