@@ -610,13 +610,22 @@
             ⚠️ This will permanently delete everything from this browser.
           </div>
 
-          <div class="backup-buttons">
-            <button class="btn-secondary" id="exportJsonBtn" type="button">Export JSON</button>
-            <button class="btn-secondary" id="exportTextBtn" type="button">Export text</button>
-          </div>
-          <div class="small-text">
-            Use export to create a backup file you can store safely.
-          </div>
+         <div class="backup-buttons">
+  <button class="btn-secondary" id="exportJsonBtn" type="button">Export JSON</button>
+  <button class="btn-secondary" id="exportTextBtn" type="button">Export text</button>
+  <button class="btn-secondary" id="importJsonBtn" type="button">Import JSON</button>
+  <!-- hidden file input for import -->
+  <input
+    type="file"
+    id="importJsonInput"
+    accept="application/json"
+    style="display:none"
+  />
+</div>
+<div class="small-text">
+  Use export to create a backup file you can store safely, and import JSON to restore or sync from that backup (e.g. from OneDrive).
+</div>
+
 
           <div class="calendar-section">
             <div class="calendar-header">
@@ -1006,6 +1015,43 @@
       downloadFile(name, text, "text/plain");
       showStatus("Exported text backup.", false);
     }
+function importJsonBackupFromFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const text = event.target.result;
+      const imported = JSON.parse(text);
+
+      if (!imported || typeof imported !== "object") {
+        showStatus("Invalid JSON file for import.", true);
+        return;
+      }
+
+      const current = loadEntries();
+      // Simple rule: imported entries overwrite existing entries for the same date
+      const merged = { ...current, ...imported };
+      saveEntries(merged);
+
+      // Try to refresh using today's date (or any date)
+      const dateInput = document.getElementById("dateInput");
+      const currentDate = dateInput ? dateInput.value : null;
+
+      refreshEntriesList(currentDate || undefined);
+      renderCalendar(currentDate || undefined);
+      renderMoodStats();
+
+      showStatus("Imported entries from JSON backup.", false);
+    } catch (e) {
+      console.error("Import error:", e);
+      showStatus("Failed to import JSON backup.", true);
+    }
+  };
+  reader.onerror = () => {
+    showStatus("Could not read the file.", true);
+  };
+  reader.readAsText(file);
+}
 
     /* ===== Auto-save ===== */
     function saveCurrentEntry(options = { auto: false }) {
@@ -1064,8 +1110,11 @@
       const deleteAllBtn = document.getElementById("deleteAllBtn");
       const searchInput = document.getElementById("searchInput");
       const clearSearchBtn = document.getElementById("clearSearchBtn");
-      const exportJsonBtn = document.getElementById("exportJsonBtn");
-      const exportTextBtn = document.getElementById("exportTextBtn");
+    const exportJsonBtn = document.getElementById("exportJsonBtn");
+    const exportTextBtn = document.getElementById("exportTextBtn");
+const importJsonBtn = document.getElementById("importJsonBtn");
+const importJsonInput = document.getElementById("importJsonInput");
+
       const prevMonthBtn = document.getElementById("prevMonthBtn");
       const nextMonthBtn = document.getElementById("nextMonthBtn");
       const voiceBtn = document.getElementById("voiceBtn");
@@ -1149,8 +1198,24 @@
       });
 
       // Backup buttons
-      exportJsonBtn.addEventListener("click", exportJsonBackup);
-      exportTextBtn.addEventListener("click", exportTextBackup);
+      // Backup buttons
+exportJsonBtn.addEventListener("click", exportJsonBackup);
+exportTextBtn.addEventListener("click", exportTextBackup);
+
+importJsonBtn.addEventListener("click", () => {
+  // Trigger the hidden file input
+  importJsonInput.click();
+});
+
+importJsonInput.addEventListener("change", () => {
+  const file = importJsonInput.files && importJsonInput.files[0];
+  if (file) {
+    importJsonBackupFromFile(file);
+  }
+  // Reset so selecting the same file again still fires change
+  importJsonInput.value = "";
+});
+
 
       // Calendar navigation
       prevMonthBtn.addEventListener("click", () => {
